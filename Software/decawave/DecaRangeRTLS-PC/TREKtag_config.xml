@@ -1,0 +1,4 @@
+<config>
+ <tag_cfg history="20" size="0.15"/>
+ <tag ID="0" label="Tag 0"/>
+</config>
