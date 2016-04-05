@@ -31,8 +31,7 @@ SOURCES += main.cpp\
     util/QPropertyModel.cpp \
     network/SerialConnection.cpp \
     tools/trilateration.cpp \
-    network/Sender.cpp \
-    network/SafeLogging.cpp
+    network/Sender.cpp
 
 HEADERS  += \
     RTLSDisplayApplication.h \
@@ -51,8 +50,7 @@ HEADERS  += \
     util/QPropertyModel.h \
     network/SerialConnection.h \
     tools/trilateration.h \
-    network/Sender.h \
-    network/SafeLogging.h
+    network/Sender.h
 FORMS    += \
     views/mainwindow.ui \
     views/GraphicsWidget.ui \

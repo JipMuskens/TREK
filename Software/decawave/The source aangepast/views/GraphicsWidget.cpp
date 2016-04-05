@@ -1,5 +1,3 @@
-
-
 // -------------------------------------------------------------------------------------------------------------------
 //
 //  File: GraphicsWidget.cpp
@@ -14,8 +12,6 @@
 
 #include "GraphicsWidget.h"
 #include "ui_graphicswidget.h"
-#include "mainwindow.h"
-#include "ViewSettingsWidget.h"
 
 #include "RTLSDisplayApplication.h"
 #include "ViewSettings.h"
@@ -29,7 +25,6 @@
 #include <QInputDialog>
 #include <QFile>
 #include <QPen>
-#include <QTextStream>
 
 #define PEN_WIDTH (0.04)
 #define ANC_SIZE (0.15)
@@ -131,17 +126,11 @@ void GraphicsWidget::onReady()
     QObject::connect(ui->anchorTable, SIGNAL(cellClicked(int, int)), this, SLOT(anchorTableClicked(int, int)));
     QObject::connect(ui->tagTable, SIGNAL(itemSelectionChanged()), this, SLOT(itemSelectionChanged()));
     QObject::connect(ui->anchorTable, SIGNAL(itemSelectionChanged()), this, SLOT(itemSelectionChangedAnc()));
+
     QObject::connect(this, SIGNAL(centerAt(double,double)), graphicsView(), SLOT(centerAt(double, double)));
     QObject::connect(this, SIGNAL(centerRect(QRectF)), graphicsView(), SLOT(centerRect(QRectF)));
-    QObject::connect(ui->BTSettings, SIGNAL(clicked(bool)), this, SLOT(EnableSettingsWindow(bool)));
-
 
     _busy = false ;
-}
-
-void GraphicsWidget::EnableSettingsWindow(bool nothing)
-{
-     RTLSDisplayApplication::mainWindow()->ShowSettings();
 }
 
 GraphicsWidget::~GraphicsWidget()
@@ -390,7 +379,6 @@ void GraphicsWidget::tagTableChanged(int r, int c)
 
             //update the map
             QMap<quint64, QString>::iterator i = _tagLabels.find(tagId);
-            RTLSDisplayApplication::mainWindow()->viewSettingsWidget()->TagLabelChanged(tagId,newLabel);
 
             if(i == _tagLabels.end()) //did not find the label
             {
@@ -956,7 +944,7 @@ void GraphicsWidget::tagStats(quint64 tagId, double x, double y, double z, doubl
 
         _busy = false ;
 
-       // qDebug() << "R95: 0x" + QString::number(tagId, 16) << " " << x << " " << y << " " << z << " " << r95;
+        qDebug() << "R95: 0x" + QString::number(tagId, 16) << " " << x << " " << y << " " << z << " " << r95;
 
     }
 }
@@ -1537,7 +1525,6 @@ void GraphicsWidget::setShowTagHistory(bool set)
  * @brief  add new Anchor with anchId into the tags QMap
  *
  * */
-
 void GraphicsWidget::addNewAnchor(quint64 anchId, bool show)
 {
     Anchor *anc;

@@ -118,18 +118,11 @@ void Sender::SendData(data_struct_t datagram)
 
     if(method == 1)
     {
-        char jestring[150];
-        QString Complete = "IDGlasses";
-        Complete += ", IDTag";
-        char* cstr;
-        cstr = new char [Complete.size()+1];
-        strcpy( cstr, Complete.toLatin1() );
-        snprintf(jestring, 150, "%f,%f,%f,%f,%f,%f,%s", datagram.xGlass, datagram.yGlass, datagram.zGlass, datagram.xTag, datagram.yTag, datagram.zTag,cstr);
-        int s = strlen((char*)jestring);
+        char jestring[100];
+        snprintf(jestring, 100, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f", datagram.xGlass, datagram.yGlass, datagram.zGlass, datagram.IdGlass, datagram.xTag, datagram.yTag, datagram.zTag, datagram.IdTag, datagram.xAnc0, datagram.yAnc0, datagram.zAnc0);
         DataToSend = QByteArray(jestring,sizeof(jestring));
-        udpSocket->writeDatagram(DataToSend.data(), s,
+        udpSocket->writeDatagram(DataToSend.data(), DataToSend.size(),
         QHostAddress::Broadcast, 45454);
-        qDebug() << "DataSend: " << jestring;
     }
     else if(method == 2)
     {

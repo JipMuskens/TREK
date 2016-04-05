@@ -19,7 +19,6 @@
 #include "GraphicsWidget.h"
 #include "Sender.h"
 
-
 #include <QMetaProperty>
 #include <QDesktopWidget>
 
@@ -55,8 +54,6 @@ RTLSDisplayApplication::RTLSDisplayApplication(int &argc, char **argv) : QApplic
 
     _sender = new Sender();
 
-    _safeLogging = new SafeLogging();
-
     _ready = true;
 
     //Connect the various signals and corresponding slots
@@ -90,10 +87,6 @@ RTLSDisplayApplication::~RTLSDisplayApplication()
     delete _serialConnection;
 
 	delete _viewSettings;
-
-    delete _sender;
-
-    delete _safeLogging;
 }
 
 RTLSDisplayApplication *RTLSDisplayApplication::instance()
@@ -134,11 +127,6 @@ GraphicsView *RTLSDisplayApplication::graphicsView()
 Sender *RTLSDisplayApplication::sender()
 {
     return instance()->_sender;
-}
-
-SafeLogging *RTLSDisplayApplication::safeLogging()
-{
-    return instance()->_safeLogging;
 }
 
 void RTLSDisplayApplication::connectReady(QObject *receiver, const char *member, Qt::ConnectionType type)

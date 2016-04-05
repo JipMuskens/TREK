@@ -24,15 +24,13 @@
 #include <QMessageBox>
 #include <QDomDocument>
 #include <QFile>
-#include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timerLog = new QTimer(this);
-    timerSendData = new QTimer(this);
+
     _showMainToolBar = false;
     _notConnected = true;
 
@@ -46,13 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->menuBar->addAction(anchorConfigAction);
     //connect(anchorConfigAction, SIGNAL(triggered()), SLOT(onAnchorConfigAction()));
 
-
     //add connection widget to the main window
     _cWidget = new ConnectionWidget(this);
     ui->mainToolBar->addWidget(_cWidget);
 
     QObject::connect(RTLSDisplayApplication::instance(), SIGNAL(aboutToQuit()), SLOT(saveSettings()));
-
 
     _infoLabel = new QLabel(parent);
 
@@ -60,8 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->minimap_dw->close();
 
     connect(ui->minimap_dw->toggleViewAction(), SIGNAL(triggered()), SLOT(onMiniMapView()));
-    connect(timerLog, SIGNAL(timeout()), this, SLOT(LogTimeout()));
-    connect(timerSendData, SIGNAL(timeout()), this, SLOT(SendDataTimeout()));
 
     QObject::connect(RTLSDisplayApplication::serialConnection(), SIGNAL(connectionStateChanged(SerialConnection::ConnectionState)),
                      this, SLOT(connectionStateChanged(SerialConnection::ConnectionState)));
@@ -71,9 +65,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::onReady()
 {
-    SendDataInterval = 1000;
-    LogInterval = 10000;
+
     QObject::connect(graphicsWidget(), SIGNAL(setTagHistory(int)), viewSettingsWidget(), SLOT(setTagHistory(int)));
+
     loadSettings();
 
     if(_showMainToolBar)
@@ -84,7 +78,7 @@ void MainWindow::onReady()
     {
         ui->mainToolBar->hide();
     }
-    //ui->viewSettings_dw->show();
+    ui->viewSettings_dw->show();
 
     while(_notConnected)
     {
@@ -120,17 +114,6 @@ void MainWindow::onReady()
     }
 
 }
-
-void MainWindow::LogTimeout()
-{
-    RTLSDisplayApplication::safeLogging()->LogData();
-}
-
-void MainWindow::SendDataTimeout()
-{
-    RTLSDisplayApplication::safeLogging()->SendData();
-}
-
 
 MainWindow::~MainWindow()
 {
@@ -237,37 +220,6 @@ void MainWindow::loadSettings()
     RTLSDisplayApplication::instance()->client()->loadConfigFile("./TREKanc_config.xml");
 }
 
-void MainWindow::ShowSettings(void)
-{
-    ui->viewSettings_dw->show();
-}
-
-void MainWindow::ToggleTimerLog(bool Status)
-{
-    if(Status)
-    {
-        timerLog->start(LogInterval);
-    }
-    else
-    {
-        timerLog->stop();
-    }
-    qDebug() << "ToggleSafeLogging: timerLog: " << timerLog->isActive();
-}
-
-void MainWindow::ToggleTimerSendData(bool Status)
-{
-    if(Status)
-    {
-        timerSendData->start(SendDataInterval);
-    }
-    else
-    {
-        timerSendData->stop();
-    }
-    qDebug() << "ToggleSafeLogging: timerLog: " << timerLog->isActive();
-}
-
 void MainWindow::saveSettings()
 {
     QSettings s;
@@ -339,20 +291,6 @@ void MainWindow::loadConfigFile(QString filename)
     }
 
     file.close(); //close the file
-}
-
-void MainWindow::SetSendDataInterval(int value)
-{
-    qDebug() << "SetSendDataInterval: " << value << " Ms";
-    SendDataInterval = value;
-    timerSendData->setInterval(SendDataInterval);
-}
-
-void MainWindow::SetLogInterval(int value)
-{
-    qDebug() << "SetLogInterval: " << value << " Mins";
-    LogInterval = value*60000;
-    timerLog->setInterval(LogInterval);
 }
 
 void MainWindow::saveConfigFile(QString filename, QString cfg)

@@ -9,7 +9,7 @@ public class GyroController : MonoBehaviour
     private bool gyroEnabled = true;
 	private const float lowPassFilterFactor = 0.2f;
 
-	private readonly Quaternion baseIdentity =  Quaternion.Euler(-90, 180, 0);
+	private readonly Quaternion baseIdentity =  Quaternion.Euler(90, 0, 0);
 	private readonly Quaternion landscapeRight =  Quaternion.Euler(0, 0, 90);
 	private readonly Quaternion landscapeLeft =  Quaternion.Euler(0, 0, -90);
 	private readonly Quaternion upsideDown =  Quaternion.Euler(0, 0, 180);
@@ -28,7 +28,6 @@ public class GyroController : MonoBehaviour
 	{
 		AttachGyro();
         Input.gyro.enabled = true;
-        Screen.orientation = ScreenOrientation.Landscape;
 	}
 
 	protected void Update()
@@ -109,7 +108,7 @@ public class GyroController : MonoBehaviour
 		return new Quaternion(q.x, q.y, -q.z, -q.w);	
 	}
 	
-	/// Resets the rotation and fixes it if the screen orientation is different.
+	/// Gets the rot fix for different orientations.
 	private Quaternion GetRotFix()
 	{
 #if UNITY_3_5

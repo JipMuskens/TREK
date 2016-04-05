@@ -6,11 +6,14 @@ public class TagData{
         public double xGlass;
         public double yGlass;
         public double zGlass;
-        public string IdGlass;
+        public double IdGlass;
         public double xTag;
         public double yTag;
         public double zTag;
-        public string IdTag;
+        public double IdTag;
+        public double xAnc0;
+        public double yAnc0;
+        public double zAnc0;
 
         public TagData()
         {

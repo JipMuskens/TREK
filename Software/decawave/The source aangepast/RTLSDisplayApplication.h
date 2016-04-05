@@ -16,7 +16,6 @@
 #include <QApplication>
 #include <QAbstractItemView>
 #include <qthread.h>
-#include "SafeLogging.h"
 
 class QItemSelectionModel;
 class ViewSettings;
@@ -26,7 +25,6 @@ class GraphicsWidget;
 class GraphicsView;
 class RTLSClient;
 class Sender;
-class SafeLogging;
 
 /**
  * The RTLSDisplayApplication class is a singleton class which handles the application.
@@ -55,7 +53,6 @@ public:
     static RTLSClient *client();
     static MainWindow *mainWindow();
     static Sender *sender();
-    static SafeLogging *safeLogging();
 
     static GraphicsWidget *graphicsWidget();
     static GraphicsView *graphicsView();
@@ -80,8 +77,6 @@ protected:
 
 private:
     Sender *_sender;
-
-    SafeLogging *_safeLogging;
 
 	ViewSettings *_viewSettings;
 

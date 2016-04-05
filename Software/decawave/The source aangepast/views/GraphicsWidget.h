@@ -115,6 +115,7 @@ signals:
     void updateTagCorrection(int aid, int tid, int value);
     void centerAt(double x, double y);
     void centerRect(const QRectF &visibleRect);
+
     void setTagHistory(int h);
 
 public slots:
@@ -143,7 +144,6 @@ public slots:
     void tagHistoryNumber(int value);
     void zone(int zone, double radius, bool red);
     void setAlarm(bool in, bool out);
-    void EnableSettingsWindow(bool nothing);
 
 protected slots:
     void onReady();

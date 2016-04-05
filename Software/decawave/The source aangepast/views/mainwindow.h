@@ -16,13 +16,12 @@
 #include <QMainWindow>
 #include <QAbstractSocket>
 #include <QLabel>
-
 #include "serialconnection.h"
 
 namespace Ui {
 class MainWindow;
 }
-class QTimer;
+
 class SerialConnection;
 class GraphicsWidget;
 class ConnectionWidget;
@@ -45,50 +44,30 @@ public:
 
     ViewSettingsWidget *viewSettingsWidget();
 
-    /**
-     * createPopupMenu adds the windows actions to \a menu.
-     * The are the actions to hide or show dock widgets.
-     * @param menu the QMenu instance to which the actions should be added
-     * @return the menu object
-     */
     void saveConfigFile(QString filename, QString cfg);
     void loadConfigFile(QString filename);
-    void SetSendDataInterval(int value);
-    void SetLogInterval(int value);
 
 public slots:
     void connectionStateChanged(SerialConnection::ConnectionState);
-    void ShowSettings(void);
-    void ToggleTimerLog(bool);
-    void ToggleTimerSendData(bool);
 
 protected slots:
     void onReady();
-    void LogTimeout();
-    void SendDataTimeout();
+
     void loadSettings();
     void saveSettings();
 
-    void onAboutAction();
     void onMiniMapView();
 
     void onAnchorConfigAction();
 
     void statusBarMessage(QString status);
 
-
-
 private:
     Ui::MainWindow *const ui;
-    QAction *_aboutAction;
     QLabel *_infoLabel;
-    QTimer *timerLog;
-    QTimer *timerSendData;
+
     QAction *_anchorConfigAction;
     ConnectionWidget *_cWidget;
-
-    int SendDataInterval;
-    int LogInterval;
 
     bool _showMainToolBar;
     bool _notConnected;

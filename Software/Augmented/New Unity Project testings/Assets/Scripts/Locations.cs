@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using UnityEngine.UI;
 
 public class Locations : MonoBehaviour {
 
@@ -9,25 +8,19 @@ public class Locations : MonoBehaviour {
     public UDPManager myUDPManager;
     public Camera myCamera;
     public GameObject mySphere;
-    private Vector3 zeroVector;
 
 	void Start () {
-        zeroVector.x = 0;
-        zeroVector.y = 0;
-        zeroVector.z = 0;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (myUDPManager != null)
         {
-            Vector3 newCamVector = new Vector3((float)myUDPManager.tagdata.xGlass , 0, (float)myUDPManager.tagdata.yGlass ); // xglass, zglass, yglass
-            myCamera.transform.position = newCamVector;
+            myCamera.transform.position = new Vector3((float)myUDPManager.tagdata.xGlass, (float)myUDPManager.tagdata.yGlass, (float)myUDPManager.tagdata.zGlass);
 
-            Vector3 newSphereVector = new Vector3((float)myUDPManager.tagdata.xTag , 0, (float)myUDPManager.tagdata.yTag ); // xtag, ztag, ytag
 
-            mySphere.transform.position = newSphereVector; // Literally teleport to the location that is received over Wi-Fi
-            //mySphere.transform.position = Vector3.MoveTowards(transform.position, newSphereVector, Time.deltaTime); // Slowly move towards the location that is received over Wi-Fi
+            mySphere.transform.position = new Vector3((float)myUDPManager.tagdata.xTag, (float)myUDPManager.tagdata.yTag, (float)myUDPManager.tagdata.zTag);
         }
 	}
 }

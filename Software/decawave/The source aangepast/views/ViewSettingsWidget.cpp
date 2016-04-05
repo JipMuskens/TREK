@@ -20,7 +20,6 @@
 #include "ScaleTool.h"
 #include "GraphicsView.h"
 #include "GraphicsWidget.h"
-#include "mainwindow.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -43,11 +42,22 @@ ViewSettingsWidget::ViewSettingsWidget(QWidget *parent) :
     QObject::connect(ui->gridShow, SIGNAL(clicked()), this, SLOT(gridShowClicked()));
     QObject::connect(ui->showOrigin, SIGNAL(clicked()), this, SLOT(originShowClicked()));
     QObject::connect(ui->showTagHistory, SIGNAL(clicked()), this, SLOT(tagHistoryShowClicked()));
-    QObject::connect(ui->LogInterval, SIGNAL(clicked()), this, SLOT(LogIntervalClicked()));
-    QObject::connect(ui->SendData, SIGNAL(clicked()), this, SLOT(SendDataClicked()));
+    QObject::connect(ui->showGeoFencingMode, SIGNAL(clicked()), this, SLOT(showGeoFencingModeClicked()));
+    QObject::connect(ui->showNavigationMode, SIGNAL(clicked()), this, SLOT(showNavigationModeClicked()));
+
+    QObject::connect(ui->showTagTable, SIGNAL(clicked()), this, SLOT(tagAncTableShowClicked()));
+    QObject::connect(ui->showAnchorTable, SIGNAL(clicked()), this, SLOT(tagAncTableShowClicked()));
+    QObject::connect(ui->showAnchorTagCorrectionTable, SIGNAL(clicked()), this, SLOT(tagAncTableShowClicked()));
+
+    QObject::connect(ui->zone1, SIGNAL(editingFinished()), this, SLOT(zone1EditFinished()));
+    QObject::connect(ui->zone2, SIGNAL(editingFinished()), this, SLOT(zone2EditFinished()));
+
+    QObject::connect(ui->zone1, SIGNAL(valueChanged(double)), this, SLOT(zone1ValueChanged(double)));
+    QObject::connect(ui->zone2, SIGNAL(valueChanged(double)), this, SLOT(zone2ValueChanged(double)));
+    QObject::connect(ui->inAlarm, SIGNAL(clicked()), this, SLOT(alarmSetClicked()));
+    QObject::connect(ui->outAlarm, SIGNAL(clicked()), this, SLOT(alarmSetClicked()));
+
     QObject::connect(ui->tagHistoryN, SIGNAL(valueChanged(int)), this, SLOT(tagHistoryNumberValueChanged(int)));
-    QObject::connect(ui->SendataIntervalSB, SIGNAL(valueChanged(int)), this, SLOT(SendDataIntervalValue(int)));
-    QObject::connect(ui->LogIntervalSB, SIGNAL(valueChanged(int)), this, SLOT(LogIntervalValueChanged(int)));
 
     QObject::connect(RTLSDisplayApplication::viewSettings(), SIGNAL(showGO(bool, bool)), this, SLOT(showOriginGrid(bool, bool)));
     QObject::connect(RTLSDisplayApplication::viewSettings(), SIGNAL(setFloorPlanPic()), this, SLOT(getFloorPlanPic()));
@@ -82,27 +92,23 @@ void ViewSettingsWidget::onReady()
 
     ui->showTagHistory->setChecked(true);
 
+    ui->zone1->setDisabled(true);
+    ui->zone2->setDisabled(true);
+    ui->label_z1->setDisabled(true);
+    ui->label_z2->setDisabled(true);
+    ui->outAlarm->setDisabled(true);
+    ui->inAlarm->setDisabled(true);
+
     ui->tabWidget->setCurrentIndex(0);
+
+    RTLSDisplayApplication::graphicsWidget()->zone1Value(ui->zone1->value());
+    RTLSDisplayApplication::graphicsWidget()->zone2Value(ui->zone2->value());
+    RTLSDisplayApplication::graphicsWidget()->setAlarm(ui->inAlarm->isChecked(), ui->outAlarm->isChecked());
 }
 
 ViewSettingsWidget::~ViewSettingsWidget()
 {
     delete ui;
-}
-void ViewSettingsWidget::SendDataClicked()
-{
-    RTLSDisplayApplication::mainWindow()->ToggleTimerSendData(ui->SendData->isChecked());
-}
-
-void ViewSettingsWidget::SendDataIntervalValue(int value)
-{
-    RTLSDisplayApplication::mainWindow()->SetSendDataInterval(value);
-}
-
-void ViewSettingsWidget::LogIntervalValueChanged(int value)
-{
-    //qDebug() << "LogIntervalValueChanged" << value;
-    RTLSDisplayApplication::mainWindow()->SetLogInterval(value);
 }
 
 int ViewSettingsWidget::applyFloorPlanPic(const QString &path)
@@ -119,26 +125,6 @@ int ViewSettingsWidget::applyFloorPlanPic(const QString &path)
     RTLSDisplayApplication::viewSettings()->setFloorplanPixmap(pm);
 
     return 0;
-}
-
-void ViewSettingsWidget::AddItemToComboBox(int value)
-{
-    QString temp = "Tag ";
-    temp.append(QString::number(value));
-    qDebug() << "Adding item to combobox: " << temp;
-    ui->comboBox->addItem(temp);
-}
-
-void ViewSettingsWidget::TagLabelChanged(int index, QString label)
-{
-    int count = ui->comboBox->count();
-    //qDebug() << "index: " << index;
-    //qDebug() << "label: " << label;
-        if(!count)
-        {
-            return;
-        }
-        ui->comboBox->setItemText(index,label);
 }
 
 void ViewSettingsWidget::getFloorPlanPic()
@@ -173,9 +159,69 @@ void ViewSettingsWidget::originShowClicked()
     RTLSDisplayApplication::viewSettings()->setShowOrigin(ui->showOrigin->isChecked());
 }
 
+void ViewSettingsWidget::showNavigationModeClicked()
+{
+    if(ui->showNavigationMode->isChecked())
+    {
+        ui->showGeoFencingMode->setChecked(false);
+        showGeoFencingModeClicked();
+    }
+    else
+    {
+        ui->showGeoFencingMode->setChecked(true);
+        showGeoFencingModeClicked();
+    }
+}
+
+
+void ViewSettingsWidget::showGeoFencingModeClicked()
+{
+    RTLSDisplayApplication::graphicsWidget()->showGeoFencingMode(ui->showGeoFencingMode->isChecked());
+
+    if(ui->showGeoFencingMode->isChecked())
+    {
+        ui->showTagHistory->setDisabled(true);
+        ui->tagHistoryN->setDisabled(true);
+
+        ui->zone1->setEnabled(true);
+        ui->zone2->setEnabled(true);
+        ui->label_z1->setEnabled(true);
+        ui->label_z2->setEnabled(true);
+        ui->outAlarm->setEnabled(true);
+        ui->inAlarm->setEnabled(true);
+
+        ui->showNavigationMode->setChecked(false);
+    }
+    else
+    {
+        ui->showTagHistory->setDisabled(false);
+        ui->tagHistoryN->setDisabled(false);
+
+        ui->zone1->setDisabled(true);
+        ui->zone2->setDisabled(true);
+        ui->label_z1->setDisabled(true);
+        ui->label_z2->setDisabled(true);
+        ui->outAlarm->setDisabled(true);
+        ui->inAlarm->setDisabled(true);
+
+        ui->showNavigationMode->setChecked(true);
+    }
+
+}
+
 void ViewSettingsWidget::tagHistoryNumberValueChanged(int value)
 {
     RTLSDisplayApplication::graphicsWidget()->tagHistoryNumber(value);
+}
+
+void ViewSettingsWidget::zone1EditFinished(void)
+{
+    RTLSDisplayApplication::graphicsWidget()->zone1Value(ui->zone1->value());
+}
+
+void ViewSettingsWidget::zone2EditFinished(void)
+{
+    RTLSDisplayApplication::graphicsWidget()->zone2Value(ui->zone2->value());
 }
 
 void ViewSettingsWidget::zone1ValueChanged(double value)
@@ -187,6 +233,14 @@ void ViewSettingsWidget::zone2ValueChanged(double value)
 {
     RTLSDisplayApplication::graphicsWidget()->zone2Value(value);
 }
+
+void ViewSettingsWidget::tagAncTableShowClicked()
+{
+    RTLSDisplayApplication::graphicsWidget()->setShowTagAncTable(ui->showAnchorTable->isChecked(),
+                                                                 ui->showTagTable->isChecked(),
+                                                                 ui->showAnchorTagCorrectionTable->isChecked());
+}
+
 void ViewSettingsWidget::setTagHistory(int h)
 {
     ui->tagHistoryN->setValue(h);
@@ -198,9 +252,9 @@ void ViewSettingsWidget::tagHistoryShowClicked()
     RTLSDisplayApplication::graphicsWidget()->setShowTagHistory(ui->showTagHistory->isChecked());
 }
 
-void ViewSettingsWidget::LogIntervalClicked()
+void ViewSettingsWidget::alarmSetClicked()
 {
-    RTLSDisplayApplication::mainWindow()->ToggleTimerLog(ui->LogInterval->isChecked());
+    RTLSDisplayApplication::graphicsWidget()->setAlarm(ui->inAlarm->isChecked(), ui->outAlarm->isChecked());
 }
 
 void ViewSettingsWidget::originClicked()
@@ -223,8 +277,3 @@ void ViewSettingsWidget::scaleClicked()
     RTLSDisplayApplication::graphicsView()->setTool(tool);
 }
 
-
-void ViewSettingsWidget::on_comboBox_currentIndexChanged(int index)
-{
-    RTLSDisplayApplication::safeLogging()->ChangeSearchItem(index);
-}

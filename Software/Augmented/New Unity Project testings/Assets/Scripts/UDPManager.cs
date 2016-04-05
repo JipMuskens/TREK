@@ -28,13 +28,18 @@ public class UDPManager : MonoBehaviour
     //tagdata is the class in which all the data that is received over UDP is saved. This class is defined in the file TagData in the scripts folder.
     public TagData tagdata;
 
-    public string playSound;
+    //struct_tagdata was used before when trying to send the entire struct over the network. Unused right now.
+    public struct struct_tagdata
+    {
+        public double xGlass, yGlass, zGlass, IdGlass;
+        public double xTag, yTag, zTag, IdTag;
+        public double xAnc0, yAnc0, zAnc0;
+    }
 
     public void Start()
     {
         init();
         tagdata = new TagData();
-        playSound = "0";
     }
 
     //ONGUI is used for printing the Debug Data in the top left corner of the screen.
@@ -44,7 +49,7 @@ public class UDPManager : MonoBehaviour
         GUIStyle style = new GUIStyle();
         style.alignment = TextAnchor.UpperLeft;
         style.normal.textColor = Color.white;
-        GUI.Box(rectObj, "Reading port: " + port + "\nGlasses: " + lastReceivedUDPPacket, style);
+        GUI.Box(rectObj, "Reading port: " + port + "\nLast Packet: \n" + lastReceivedUDPPacket, style);
     }
 
     //initialisation
@@ -88,19 +93,20 @@ public class UDPManager : MonoBehaviour
                     tagdata.xGlass = Convert.ToDouble(values[0]);
                     tagdata.yGlass = Convert.ToDouble(values[1]);
                     tagdata.zGlass = Convert.ToDouble(values[2]);
-                    tagdata.xTag = Convert.ToDouble(values[3]);
-                    tagdata.yTag = Convert.ToDouble(values[4]);
-                    tagdata.zTag = Convert.ToDouble(values[5]);
-                    tagdata.IdGlass = values[6];
-                    tagdata.IdTag = values[7];
-                    playSound = values[8];
+                    tagdata.IdGlass = Convert.ToDouble(values[3]);
+                    tagdata.xTag = Convert.ToDouble(values[4]);
+                    tagdata.yTag = Convert.ToDouble(values[5]);
+                    tagdata.zTag = Convert.ToDouble(values[6]);
+                    tagdata.IdTag = Convert.ToDouble(values[7]);
+                    tagdata.xAnc0 = Convert.ToDouble(values[8]);
+                    tagdata.yAnc0 = Convert.ToDouble(values[9]);
+                    tagdata.zAnc0 = Convert.ToDouble(values[10]);
 
-                    //lastReceivedUDPPacket = tagdata.xGlass.ToString() + "\n" + tagdata.yGlass.ToString() + "\n" + tagdata.zGlass.ToString() + "\n" + tagdata.xTag.ToString() + "\n" + tagdata.yTag.ToString() + "\n" + tagdata.zTag.ToString() + "\n" + tagdata.IdGlass.ToString() + "\n" + tagdata.IdTag.ToString();
-                    lastReceivedUDPPacket = tagdata.IdGlass;
+                    lastReceivedUDPPacket = tagdata.xGlass.ToString() + "\n" + tagdata.yGlass.ToString() + "\n" + tagdata.zGlass.ToString() + "\n" + tagdata.IdGlass.ToString() + "\n" + tagdata.xTag.ToString() + "\n" + tagdata.yTag.ToString() + "\n" + tagdata.zTag.ToString() + "\n" + tagdata.IdTag.ToString() + "\n" + tagdata.xAnc0.ToString() + "\n" + tagdata.yAnc0.ToString() + "\n" + tagdata.zAnc0.ToString();
                 }
                 else if (method == 2) //This method does not work. Earlier attempts have been made to send the entire struct with tagdata's over the network. In the end this did not work properly.
                 {
-                    TagData tagdatastruct;
+                    struct_tagdata tagdatastruct;
                     MemoryStream mystream = new MemoryStream(data);
 
                     tagdatastruct = Deserialize(mystream);
@@ -121,37 +127,31 @@ public class UDPManager : MonoBehaviour
         return lastReceivedUDPPacket;
     }
 
-    public TagData Deserialize(Stream stream) //This function was used for the failed attempt of sending the entire struct over the network.
+    public struct_tagdata Deserialize(Stream stream) //This function was used for the failed attempt of sending the entire struct over the network.
     {
         BinaryReader br = new BinaryReader(stream);
-        TagData data = new TagData();
+        struct_tagdata data = new struct_tagdata();
 
         data.xGlass = br.ReadDouble();
         data.yGlass = br.ReadDouble();
         data.zGlass = br.ReadDouble();
+        data.IdGlass = br.ReadDouble();
         data.xTag = br.ReadDouble();
         data.yTag = br.ReadDouble();
         data.zTag = br.ReadDouble();
-
-        string tempstring = "";
-
-        tempstring = br.ToString();
-
-        string[] valuetemps = tempstring.Split(',');
-
-        data.IdGlass = valuetemps[0];
-        data.IdTag = valuetemps[1];
-
-        data.IdGlass = tempstring;
+        data.IdTag = br.ReadDouble();
+        data.xAnc0 = br.ReadDouble();
+        data.yAnc0 = br.ReadDouble();
+        data.zAnc0 = br.ReadDouble();
 
         return data;
     }
 
-    TagData ByteArrayToNewStuff(byte[] bytes) //This function was also used for the failed attempt of sending the entire struct over the network.
+    struct_tagdata ByteArrayToNewStuff(byte[] bytes) //This function was also used for the failed attempt of sending the entire struct over the network.
     {
         GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-        TagData stuff = (TagData)Marshal.PtrToStructure(
-            handle.AddrOfPinnedObject(), typeof(TagData));
+        struct_tagdata stuff = (struct_tagdata)Marshal.PtrToStructure(
+            handle.AddrOfPinnedObject(), typeof(struct_tagdata));
         handle.Free();
         return stuff;
     }

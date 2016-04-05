@@ -430,18 +430,17 @@ void RTLSClient::newData()
                     }
 
                     //qDebug() << "emit tagPos" << rp.numberOfLEs;
-//                       data_struct_t dataToSend;
-//                       tag_reports_t data1;
-//                       data1.av_x =  report.x;
-//                        data1.av_y =  report.y;
-//                        data1.av_z =  report.z;
-//                       tag_reports_t data2 =  _tagList.at(0);
-//                      anc_struct_t data3 = _ancArray[0];
+                   data_struct_t dataToSend;
+                   tag_reports_t data1;
+                      data1.av_x =  report.x;
+                      data1.av_y =  report.y;
+                      data1.av_z =  report.z;
+                   tag_reports_t data2 =  _tagList.at(0);
+                   anc_struct_t data3 = _ancArray[0];
 
-//                       dataToSend = RTLSDisplayApplication::sender()->CreateData(&data1,&data2,&data3);
-//                       RTLSDisplayApplication::sender()->SendData(dataToSend);
+                   dataToSend = RTLSDisplayApplication::sender()->CreateData(&data1,&data2,&data3);
+                   RTLSDisplayApplication::sender()->SendData(dataToSend);
 
-                   RTLSDisplayApplication::safeLogging()->TagReport(tid, report.x, report.y, report.z);
                     emit tagPos(tid, report.x, report.y, report.z); //send the update to graphic
 
                     if(nolocation)
