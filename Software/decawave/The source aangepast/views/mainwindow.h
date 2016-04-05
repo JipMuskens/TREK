@@ -49,6 +49,7 @@ public:
 
 public slots:
     void connectionStateChanged(SerialConnection::ConnectionState);
+    void ShowSettings(void);
 
 protected slots:
     void onReady();

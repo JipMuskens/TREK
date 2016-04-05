@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>330</height>
+    <height>350</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
     <width>700</width>
-    <height>330</height>
+    <height>350</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -227,6 +227,19 @@
    </property>
    <property name="text">
     <string>Mnimap:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="BTSettings">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>320</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Settings</string>
    </property>
   </widget>
  </widget>

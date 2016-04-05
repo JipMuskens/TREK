@@ -431,10 +431,10 @@ void RTLSClient::newData()
 
                     //qDebug() << "emit tagPos" << rp.numberOfLEs;
                    data_struct_t dataToSend;
-                   tag_reports_t data1;
-                      data1.av_x =  report.x;
-                      data1.av_y =  report.y;
-                      data1.av_z =  report.z;
+                   tag_reports_t data1 = _tagList.at(0);
+                                        // data1.av_x =  report.x;
+                                        // data1.av_y =  report.y;
+                                        // data1.av_z =  report.z;
                    tag_reports_t data2 =  _tagList.at(0);
                    anc_struct_t data3 = _ancArray[0];
 

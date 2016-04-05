@@ -78,7 +78,7 @@ void MainWindow::onReady()
     {
         ui->mainToolBar->hide();
     }
-    ui->viewSettings_dw->show();
+    //ui->viewSettings_dw->show();
 
     while(_notConnected)
     {
@@ -218,6 +218,13 @@ void MainWindow::loadSettings()
     loadConfigFile("./TREKview_config.xml");
     graphicsWidget()->loadConfigFile("./TREKtag_config.xml");
     RTLSDisplayApplication::instance()->client()->loadConfigFile("./TREKanc_config.xml");
+}
+
+
+void MainWindow::ShowSettings(void)
+{
+    qDebug() << "lalalal" ;
+    ui->viewSettings_dw->show();
 }
 
 void MainWindow::saveSettings()

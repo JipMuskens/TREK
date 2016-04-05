@@ -12,6 +12,7 @@
 
 #include "GraphicsWidget.h"
 #include "ui_graphicswidget.h"
+#include "mainwindow.h"
 
 #include "RTLSDisplayApplication.h"
 #include "ViewSettings.h"
@@ -129,8 +130,15 @@ void GraphicsWidget::onReady()
 
     QObject::connect(this, SIGNAL(centerAt(double,double)), graphicsView(), SLOT(centerAt(double, double)));
     QObject::connect(this, SIGNAL(centerRect(QRectF)), graphicsView(), SLOT(centerRect(QRectF)));
+    QObject::connect(ui->BTSettings, SIGNAL(clicked(bool)), this, SLOT(EnableSettingsWindow(bool)));
 
     _busy = false ;
+}
+
+
+void GraphicsWidget::EnableSettingsWindow(bool nothing)
+{
+     RTLSDisplayApplication::mainWindow()->ShowSettings();
 }
 
 GraphicsWidget::~GraphicsWidget()

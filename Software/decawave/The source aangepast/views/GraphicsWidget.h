@@ -144,6 +144,7 @@ public slots:
     void tagHistoryNumber(int value);
     void zone(int zone, double radius, bool red);
     void setAlarm(bool in, bool out);
+    void EnableSettingsWindow(bool nothing);
 
 protected slots:
     void onReady();
