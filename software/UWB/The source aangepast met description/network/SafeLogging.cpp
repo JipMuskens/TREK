@@ -8,6 +8,7 @@
 #include "SafeLogging.h"
 #include "RTLSDisplayApplication.h"
 #include "Sender.h"
+#include "WebsiteClient.h"
 #include "mainwindow.h"
 #include "ViewSettingsWidget.h"
 #include "GraphicsWidget.h"
@@ -58,6 +59,8 @@ void SafeLogging::SendData()
         {
             qDebug() << "SafeLogging: No Glasses detected!";
         }
+        QList <tag_reports_t> Tags = _tagLogList;
+        RTLSDisplayApplication::websiteClient()->SendJSONData(&Tags);
     }
     else
     {

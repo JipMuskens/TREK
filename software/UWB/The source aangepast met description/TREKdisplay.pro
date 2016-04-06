@@ -5,7 +5,7 @@
 #-------------------------------------------------
 cache()
 
-QT       += core gui network xml serialport
+QT       += core gui network xml serialport websockets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     network/SerialConnection.cpp \
     tools/trilateration.cpp \
     network/Sender.cpp \
-    network/SafeLogging.cpp
+    network/SafeLogging.cpp \
+    network/WebsiteClient.cpp
 
 HEADERS  += \
     RTLSDisplayApplication.h \
@@ -52,7 +53,8 @@ HEADERS  += \
     network/SerialConnection.h \
     tools/trilateration.h \
     network/Sender.h \
-    network/SafeLogging.h
+    network/SafeLogging.h \
+    network/WebsiteClient.h
 FORMS    += \
     views/mainwindow.ui \
     views/GraphicsWidget.ui \

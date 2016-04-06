@@ -6,10 +6,13 @@
 #include "ViewSettings.h"
 #include "GraphicsWidget.h"
 #include "Sender.h"
+#include "WebsiteClient.h"
 
 
 #include <QMetaProperty>
 #include <QDesktopWidget>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
 
 /**
 * @brief RTLSDisplayApplication
@@ -44,6 +47,8 @@ RTLSDisplayApplication::RTLSDisplayApplication(int &argc, char **argv) : QApplic
     _sender = new Sender();
 
     _safeLogging = new SafeLogging();
+
+    _websiteClient = new WebsiteClient();
 
     _ready = true;
 
@@ -82,6 +87,8 @@ RTLSDisplayApplication::~RTLSDisplayApplication()
     delete _sender;
 
     delete _safeLogging;
+
+    delete _websiteClient;
 }
 
 RTLSDisplayApplication *RTLSDisplayApplication::instance()
@@ -127,6 +134,11 @@ Sender *RTLSDisplayApplication::sender()
 SafeLogging *RTLSDisplayApplication::safeLogging()
 {
     return instance()->_safeLogging;
+}
+
+WebsiteClient *RTLSDisplayApplication::websiteClient()
+{
+    return instance()->_websiteClient;
 }
 
 void RTLSDisplayApplication::connectReady(QObject *receiver, const char *member, Qt::ConnectionType type)
