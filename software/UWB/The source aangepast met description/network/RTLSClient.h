@@ -109,6 +109,7 @@ private:
     QList <tag_reports_t> _tagList;
 
     anc_struct_t _ancArray[MAX_NUM_ANCS];
+    anc_struct_t _ancArray2[MAX_NUM_ANCS];
 
     QFile *_file;
 

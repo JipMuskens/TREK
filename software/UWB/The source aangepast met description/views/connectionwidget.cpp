@@ -75,6 +75,13 @@ int ConnectionWidget::updateDeviceList()
         {
             return -1;
         }
+        //uncommend this to add 2nd anchor
+        /*
+        if(RTLSDisplayApplication::serialConnection()->openConnection(1) != 0)
+        {
+            return -1;
+        }
+        */
     }
 
     return count;

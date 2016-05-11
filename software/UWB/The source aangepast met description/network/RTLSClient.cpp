@@ -479,6 +479,7 @@ void RTLSClient::newData()
 
 int RTLSClient::calculateTagLocation(vec3d *report, int count, int *ranges)
 {
+    //change so it checks both arrays.
     int result = 0;
     vec3d anchorArray[4];
 
